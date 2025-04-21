@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1745264134638,
+      "tag": "0000_lumpy_blur",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1745265477548,
+      "tag": "0001_timestamp-function",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1745265567576,
+      "tag": "0002_update-trigger",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1745267141604,
+      "tag": "0003_insert-snippets-data",
+      "breakpoints": true
+    }
+  ]
+}
