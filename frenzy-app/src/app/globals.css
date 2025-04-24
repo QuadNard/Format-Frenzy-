@@ -41,6 +41,14 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+} 
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-lg: 900px;
+  --breakpoint-xl: 1078px;
+  --breakpoint-xxl: 1265px;
+  --breakpoint-xsm: 500px;
 }
 
 :root {
@@ -120,3 +128,4 @@
     @apply bg-background text-foreground;
   }
 }
+
