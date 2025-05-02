@@ -2,13 +2,13 @@ import { db } from "@/db";
 import { sql } from "drizzle-orm";
 
 
-export type QuestionSet = {
-    id: number;
-    question: string;
-    answer: string;
-  };
+export interface DBQuestionSet {
+  id: number;
+  question: string;
+  answer: string;
+}
 
-export async function getRandomIds(): Promise<QuestionSet[]> {
+export async function getRandomIds(): Promise<DBQuestionSet[]> {
 const raw = await db.execute(
     sql`
         WITH random_set_id AS (
@@ -22,8 +22,11 @@ const raw = await db.execute(
     `
     );
   // Assert the shape so TypeScript knows about `questions`
-    const rows = raw.rows as Array<{ questions: unknown }>;  
-    return rows.map(r => r.questions) as QuestionSet[];
+  type RawRow = { questions: DBQuestionSet[] };
+  const rows = raw.rows as RawRow[];
+
+  // Flatten and return
+  return rows.flatMap(r => r.questions);
 }
 
 

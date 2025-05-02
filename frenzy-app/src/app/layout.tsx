@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import QueryProvider from "@/components/providers/query-provider";
 import "./globals.css";
 import RightBar from "@/components/layout/right-bar";
+import DevCleanup from "@/utils/DevCleanup";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +25,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+ 
+
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0f0f0f]`}>
@@ -36,11 +40,10 @@ export default function RootLayout({
               {children}
             </div>
             {/*
-      <div className="hidden lg:flex ml-4 md:ml-8 flex-1">
-                <RightBar />
+            <div className="hidden lg:flex ml-4 md:ml-8 flex-1">
+              <RightBar />
             </div>
- */
-  }
+            */}
           </div>
         </QueryProvider>
       </body>

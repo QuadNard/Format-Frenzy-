@@ -23,16 +23,20 @@ interface MorphingCodeEditorProps {
   readOnly?: boolean;
   theme?: string;
   title?: string;
+  value?: string; // optional controlled value
+  readOnlyDuringAnimation?: boolean;
 }
 
 const MorphingCodeEditor: React.FC<MorphingCodeEditorProps> = ({
-  defaultLanguage = 'javascript',
+  defaultLanguage = 'python',
   defaultValue = '// Add your code here',
   height = '16rem',
   onChange = () => {},
   readOnly = false,
   theme = 'vs-dark',
   title = 'Code Editor',
+  value,
+  readOnlyDuringAnimation = false,
 }) => {
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -41,12 +45,14 @@ const MorphingCodeEditor: React.FC<MorphingCodeEditorProps> = ({
   const [code, setCode] = useState<string>(defaultValue);
 
   // Function to handle editor mounting for compact view
-  const handleEditorDidMount: OnMount = (editor) => {
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
     editorRef.current = editor;
   };
 
   // Function to handle editor mounting for expanded view
-  const handleExpandedEditorDidMount: OnMount = (editor) => {
+  const handleExpandedEditorDidMount: OnMount = (editor, monaco) => {
+    editor.setValue(code);
+    editor.focus();
     // Set the expanded editor with same content
     editor.setValue(code);
 
@@ -63,11 +69,10 @@ const MorphingCodeEditor: React.FC<MorphingCodeEditorProps> = ({
   };
 
   // Handle editor content changes
-  const handleEditorChange: OnChange = (value) => {
-    if (value !== undefined) {
-      setCode(value);
-      onChange(value);
-    }
+  const handleEditorChange: OnChange = (value, ev) => {
+    const newCode = value ?? '';
+    setCode(newCode);
+    onChange(newCode);
   };
 
   // Handle expanded editor content changes
@@ -77,6 +82,12 @@ const MorphingCodeEditor: React.FC<MorphingCodeEditorProps> = ({
       onChange(value);
     }
   };
+
+  useEffect(() => {
+    if (value !== undefined && editorRef.current) {
+      editorRef.current.setValue(value);
+    }
+  }, [value]);
 
   // Effect to handle responsive sizing
   useEffect(() => {
@@ -95,6 +106,8 @@ const MorphingCodeEditor: React.FC<MorphingCodeEditorProps> = ({
         setEditorWidth(`${containerWidth}px`);
       }
     };
+
+    // Whenever `value` changes from the parent, push it into Monaco
 
     // Initial sizing
     handleResize();
@@ -141,11 +154,11 @@ const MorphingCodeEditor: React.FC<MorphingCodeEditorProps> = ({
             <Editor
               height={editorHeight}
               width={editorWidth}
-              defaultLanguage={defaultLanguage}
               defaultValue={defaultValue}
+              language={defaultLanguage}
               value={code}
-              onMount={handleEditorDidMount}
-              onChange={handleEditorChange}
+              onChange={(value, ev) => handleEditorChange(value, ev)}
+              onMount={(editor, monaco) => handleEditorDidMount(editor, monaco)}
               theme={theme}
               options={{
                 minimap: { enabled: false },
@@ -184,10 +197,12 @@ const MorphingCodeEditor: React.FC<MorphingCodeEditorProps> = ({
             <ScrollArea className='h-[80vh]' type='scroll'>
               <Editor
                 height='calc(80vh - 40px)'
-                defaultLanguage={defaultLanguage}
+                language={defaultLanguage}
                 value={code}
-                onMount={handleExpandedEditorDidMount}
-                onChange={handleExpandedEditorChange}
+                onMount={(editor, monaco) =>
+                  handleExpandedEditorDidMount(editor, monaco)
+                }
+                onChange={(value, ev) => handleExpandedEditorChange(value, ev)}
                 theme={theme}
                 options={{
                   minimap: { enabled: true },

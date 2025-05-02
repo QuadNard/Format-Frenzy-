@@ -15,7 +15,7 @@ function Step({
   isError = false,
 }: {
   step: number;
-  label: string;
+  label: React.ReactNode;
   currentStep: number;
   isError?: boolean;
 }) {
